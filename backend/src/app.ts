@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
+import userRotuer from "./app/module/user/user.route";
 
 const app: Application = express();
 //cors
@@ -8,8 +9,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/api", (req: Request, res: Response) => {
     return res.json({ msg: 'This is the base URL' });
 });
+
+app.use('/user', userRotuer);
 
 export default app;
