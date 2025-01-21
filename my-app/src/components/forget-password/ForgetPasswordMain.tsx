@@ -6,22 +6,22 @@ import Link from 'next/link';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const LoginMain = () => {
-    const [loginInfo, setLoginInfo] = useState<IUser | undefined>();
+const ForgetPasswordMain = () => {
+    const [forgetPassInfo, setforgetPassInfo] = useState<IUser | undefined>();
 
     const handleInputInfos = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLoginInfo((prevLoginInfo: any) => ({
-            ...prevLoginInfo,
+        setforgetPassInfo((prevforgetPassInfo: any) => ({
+            ...prevforgetPassInfo,
             [e.target.name]: e.target.value,
         }));
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(loginInfo);
-        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}user/login`, loginInfo)
+        console.log(forgetPassInfo);
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}user/forget-password`, forgetPassInfo)
             .then((res) => {
-                console.log(res.data)
+                console.log(res)
                 toast.success(res.data.message)
             })
             .catch((err) => {
@@ -46,27 +46,16 @@ const LoginMain = () => {
                 p={8}
             >
                 <Heading textAlign="center" mb={6} fontWeight={800} fontSize={'25px'} >
-                    Login
+                    Forget Password
                 </Heading>
                 <form onSubmit={handleSubmit} >
                     <Stack >
-                        <label htmlFor="email">Email Address</label>
+                        <label htmlFor="email">Email</label>
                         <Input
                             id="email"
                             name='email'
                             type="email"
-                            placeholder="Enter your email"
-                            px={3}
-                            border={'1px solid gray'}
-                            required
-                            onChange={handleInputInfos}
-                        />
-                        <label htmlFor="password">Password</label>
-                        <Input
-                            id="password"
-                            name='password'
-                            type="password"
-                            placeholder="Enter your password"
+                            placeholder="Enter your registered email"
                             px={3}
                             border={'1px solid gray'}
                             required
@@ -79,20 +68,14 @@ const LoginMain = () => {
                             mt={4}
                             type="submit"
                         >
-                            Login
+                            Send
                         </Button>
                     </Stack>
                 </form>
                 <Box mt={4} textAlign="center">
                     <Text>
-                        New User?{' '}
-                        <Link href="/register" color="blue.500" style={{ textDecoration: 'underline' }}>
-                            Register here
-                        </Link>
-                    </Text>
-                    <Text>
-                        Forget Password?{' '}
-                        <Link href="/forget-password" color="blue.500" style={{ textDecoration: 'underline' }}>
+                        Login?{' '}
+                        <Link href="/login" color="blue.500" style={{ textDecoration: 'underline' }}>
                             click here
                         </Link>
                     </Text>
@@ -102,4 +85,4 @@ const LoginMain = () => {
     )
 }
 
-export default LoginMain
+export default ForgetPasswordMain

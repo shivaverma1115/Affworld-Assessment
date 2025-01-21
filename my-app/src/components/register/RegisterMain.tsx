@@ -3,6 +3,8 @@ import { Box, Button, Input, Stack, Heading, Text } from '@chakra-ui/react';
 import React, { useState } from 'react'
 import { IUser } from '../../interface/interFace';
 import Link from 'next/link';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const RegisterMain = () => {
     const [registerInfo, setregisterInfo] = useState<IUser | undefined>();
@@ -17,6 +19,15 @@ const RegisterMain = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log(registerInfo);
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}user/register`, registerInfo)
+            .then((res) => {
+                console.log(res)
+                toast.success(res.data.message)
+            })
+            .catch((err) => {
+                console.log(err)
+                toast.error(err.data.message)
+            })
     };
     return (
         <Box
@@ -39,6 +50,17 @@ const RegisterMain = () => {
                 </Heading>
                 <form onSubmit={handleSubmit} >
                     <Stack >
+                        <label htmlFor="name">Full Name</label>
+                        <Input
+                            id="name"
+                            name='name'
+                            type="text"
+                            placeholder="Enter your full name"
+                            px={3}
+                            border={'1px solid gray'}
+                            required
+                            onChange={handleInputInfos}
+                        />
                         <label htmlFor="email">Email Address</label>
                         <Input
                             id="email"
@@ -68,11 +90,11 @@ const RegisterMain = () => {
                             mt={4}
                             type="submit"
                         >
-                            register
+                            Register
                         </Button>
                     </Stack>
                 </form>
-                <Box mt={4} textAlign="center">
+                <Box mt={4} textAlign="center" >
                     <Text>
                         Already Registered?{' '}
                         <Link href="/login" color="blue.500" style={{ textDecoration: 'underline' }}>

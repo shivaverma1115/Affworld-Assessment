@@ -1,11 +1,9 @@
-import { Text } from "@chakra-ui/react";
+import LoginMain from "@/components/login/LoginMain";
 
 export default function Home() {
   return (
     <>
-      <Text>
-        This is Home page
-      </Text>
+      <LoginMain />
     </>
   );
 }
