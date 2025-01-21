@@ -1,8 +1,11 @@
+import { Text } from "@chakra-ui/react";
 
 export default function Home() {
   return (
-    <h1>
-      This is Home page layout section
-    </h1>
+    <>
+      <Text>
+        This is Home page
+      </Text>
+    </>
   );
 }
