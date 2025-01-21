@@ -5,9 +5,13 @@ import { IUser } from '../../interface/interFace';
 import Link from 'next/link';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { signIn, useSession } from 'next-auth/react';
 
 const LoginMain = () => {
     const [loginInfo, setLoginInfo] = useState<IUser | undefined>();
+
+    const session = useSession();
+    console.log(session);
 
     const handleInputInfos = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLoginInfo((prevLoginInfo: any) => ({
@@ -46,7 +50,7 @@ const LoginMain = () => {
                 p={8}
             >
                 <Heading textAlign="center" mb={6} fontWeight={800} fontSize={'25px'} >
-                    Login
+                    Login to your account
                 </Heading>
                 <form onSubmit={handleSubmit} >
                     <Stack >
@@ -78,11 +82,13 @@ const LoginMain = () => {
                             width="full"
                             mt={4}
                             type="submit"
+                            color={'white'}
                         >
                             Login
                         </Button>
                     </Stack>
                 </form>
+                <Button onClick={() => signIn("google")} >Sign with Google</Button>
                 <Box mt={4} textAlign="center">
                     <Text>
                         New User?{' '}
