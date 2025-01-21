@@ -13,7 +13,7 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.get("/api", (req, res) => {
-    return res.json({ msg: 'This is the base URL' });
+    return res.json({ msg: 'This is the base URL and CICD setup' });
 });
 app.use('/user', user_route_1.default);
 exports.default = app;

@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/api", (req: Request, res: Response) => {
-    return res.json({ msg: 'This is the base URL' });
+    return res.json({ msg: 'This is the base URL and CICD setup' });
 });
 
 app.use('/user', userRotuer);
