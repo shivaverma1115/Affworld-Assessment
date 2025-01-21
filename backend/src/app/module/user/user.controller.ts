@@ -55,7 +55,7 @@ export const registerUser = async (req: Request, res: Response) => {
         })
         if (!isRegister) return res.send({ message: "user not created" });
 
-        return res.status(200).send({ message: "register Successful", isRegister });
+        return res.send({ message: "register Successful", isRegister });
     } catch (e) {
         return res.send({ message: "custom error", e });
     }
@@ -92,7 +92,7 @@ export const forgetPassword = async (req: Request, res: Response) => {
         await isUser.save();
 
         return res.status(200).send({
-            message: "new password has been send to the registered email",
+            message: "new password has been send to your registered email",
             isSendPass
         });
     } catch (e) {

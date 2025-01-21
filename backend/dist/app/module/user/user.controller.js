@@ -69,7 +69,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
         if (!isRegister)
             return res.send({ message: "user not created" });
-        return res.status(200).send({ message: "register Successful", isRegister });
+        return res.send({ message: "register Successful", isRegister });
     }
     catch (e) {
         return res.send({ message: "custom error", e });
@@ -105,7 +105,7 @@ const forgetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
         isUser.password = newPass;
         yield isUser.save();
         return res.status(200).send({
-            message: "new password has been send to the registered email",
+            message: "new password has been send to your registered email",
             isSendPass
         });
     }
