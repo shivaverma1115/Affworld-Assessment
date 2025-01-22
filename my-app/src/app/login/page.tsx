@@ -1,3 +1,4 @@
+'use client'
 import LoginMain from "../../components/login/LoginMain"
 
 const loginPage = () => {

@@ -1,59 +1,43 @@
-'use client'
-import { Box, Button, Input, Stack, Heading, Text } from '@chakra-ui/react';
-import React, { useState } from 'react'
-import { IUser } from '../../interface/interFace';
-import Link from 'next/link';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { signIn, useSession } from 'next-auth/react';
-import useGlobalContext from '@/hook/use-context';
-import { useRouter } from 'next/navigation';
+// 'use client'
+import React from 'react'
 
-const LoginMain = () => {
-    const { user,setLoggedIn } = useGlobalContext();
-    const [loginInfo, setLoginInfo] = useState<IUser | undefined>();
-    const session = useSession();
+const TaskManagementMain = () => {
+    // const [loginInfo, setLoginInfo] = useState<IUser | undefined>();
 
-    console.log(user)
-    console.log(session)
-    const router = useRouter();
-    if (user) {
-        router.push('/task-management');
-        return;
-    }
+    // const session = useSession();
+    // console.log(session);
 
-    const handleInputInfos = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLoginInfo((prevLoginInfo: any) => ({
-            ...prevLoginInfo,
-            [e.target.name]: e.target.value,
-        }));
-    };
+    // const handleInputInfos = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setLoginInfo((prevLoginInfo: any) => ({
+    //         ...prevLoginInfo,
+    //         [e.target.name]: e.target.value,
+    //     }));
+    // };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log(loginInfo);
-        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}user/login`, loginInfo)
-            .then((res) => {
-                setLoggedIn(true);
-                // console.log(res.data)
-                if (typeof window !== "undefined") localStorage.setItem("userToken", res.data.token)
-                toast.success(res.data.message)
-            })
-            .catch((err) => {
-                console.log(err)
-                toast.error(err.data.message)
-            })
-    };
+    // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    //     console.log(loginInfo);
+    //     axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}user/login`, loginInfo)
+    //         .then((res) => {
+    //             console.log(res.data)
+    //             toast.success(res.data.message)
+    //         })
+    //         .catch((err) => {
+    //             console.log(err)
+    //             toast.error(err.data.message)
+    //         })
+    // };
     return (
-        <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            height="100vh"
-            bg="gray.50"
-            p={4}
+        <h1
+            // display="flex"
+            // alignItems="center"
+            // justifyContent="center"
+            // height="100vh"
+            // bg="gray.50"
+            // p={4}
         >
-            <Box
+            This is task management system
+            {/* <Box
                 maxW="md"
                 w="100%"
                 boxShadow="lg"
@@ -114,9 +98,9 @@ const LoginMain = () => {
                         </Link>
                     </Text>
                 </Box>
-            </Box>
-        </Box>
+            </Box> */}
+        </h1>
     )
 }
 
-export default LoginMain
+export default TaskManagementMain
