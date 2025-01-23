@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const user_route_1 = __importDefault(require("./app/module/user/user.route"));
+const task_route_1 = __importDefault(require("./app/module/task/task.route"));
 const app = (0, express_1.default)();
 //cors
 app.use((0, cors_1.default)());
@@ -16,4 +17,5 @@ app.get("/api", (req, res) => {
     return res.json({ msg: 'This is the base URL.' });
 });
 app.use('/user', user_route_1.default);
+app.use('/tasks', task_route_1.default);
 exports.default = app;

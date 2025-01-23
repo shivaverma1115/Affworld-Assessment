@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isSend = exports.forgetPassword = exports.loginUser = exports.registerUser = void 0;
+exports.isSend = exports.forgetPassword = exports.getUser = exports.loginWithGoogle = exports.loginUser = exports.registerUser = void 0;
 exports.generateToken = generateToken;
 exports.extractEmailId = extractEmailId;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -34,7 +34,7 @@ function generateToken(email) {
     const secret = process.env.JWT_SECRET;
     if (!secret)
         throw new Error('JWT_SECRET environment variable is not set.');
-    const token = jsonwebtoken_1.default.sign({ email }, secret, { expiresIn: '30d' });
+    const token = jsonwebtoken_1.default.sign({ email }, secret, { expiresIn: '1d' });
     return token;
 }
 function extractEmailId(token) {
@@ -93,6 +93,47 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.loginUser = loginUser;
+const loginWithGoogle = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(req.body);
+        const { email, name } = req.body;
+        if (!email || !name)
+            return res.status(400).send({ message: "Missing email or name" });
+        let user = yield user_model_1.User.findOne({ email });
+        if (!user) {
+            user = new user_model_1.User({
+                email,
+                name,
+                password: bcrypt_1.default.hashSync(email, 10),
+            });
+            yield user.save();
+        }
+        const token = generateToken(email);
+        return res.status(200).send({ message: "Login successful", token });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).send({ message: "An error occurred", error });
+    }
+});
+exports.loginWithGoogle = loginWithGoogle;
+const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { token } = req.body;
+        const emailId = yield extractEmailId(token);
+        const user = yield user_model_1.User.findOne({ email: emailId });
+        if (!user)
+            return res.status(400).send({ message: 'user not found' });
+        return res.status(200).send({
+            message: "get user successful",
+            data: user
+        });
+    }
+    catch (e) {
+        return res.send({ message: "custom error", e });
+    }
+});
+exports.getUser = getUser;
 const forgetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email } = req.body;

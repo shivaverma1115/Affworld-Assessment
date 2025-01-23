@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
 export function generateToken(email: string) {
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error('JWT_SECRET environment variable is not set.');
-    const token = jwt.sign({ email }, secret, { expiresIn: '30d' });
+    const token = jwt.sign({ email }, secret, { expiresIn: '1d' });
     return token as string;
 }
 
@@ -78,6 +78,49 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 }
 
+export const loginWithGoogle = async (req: Request, res: Response) => {
+    try {
+        console.log(req.body);
+        const { email, name } = req.body;
+
+        if (!email || !name) return res.status(400).send({ message: "Missing email or name" });
+
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            user = new User({
+                email,
+                name,
+                password: bcrypt.hashSync(email, 10),
+            });
+            await user.save();
+        }
+
+        const token = generateToken(email);
+        return res.status(200).send({ message: "Login successful", token });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ message: "An error occurred", error });
+    }
+};
+
+export const getUser = async (req: Request, res: Response) => {
+    try {
+        const { token } = req.body;
+        const emailId = await extractEmailId(token);
+
+        const user = await User.findOne({ email: emailId });
+        if (!user) return res.status(400).send({ message: 'user not found' })
+
+        return res.status(200).send({
+            message: "get user successful",
+            data: user
+        });
+    } catch (e) {
+        return res.send({ message: "custom error", e });
+    }
+}
+
 
 export const forgetPassword = async (req: Request, res: Response) => {
     try {
@@ -87,7 +130,7 @@ export const forgetPassword = async (req: Request, res: Response) => {
 
         const randomPass = `RN-${Date.now()}`;
         const newPass = await bcrypt.hash(randomPass, 10);
-        const isSendPass = await isSend(email,randomPass);
+        const isSendPass = await isSend(email, randomPass);
         isUser.password = newPass;
         await isUser.save();
 
@@ -101,7 +144,7 @@ export const forgetPassword = async (req: Request, res: Response) => {
 }
 
 
-export const isSend = async (email: string,randomPass:string) => {
+export const isSend = async (email: string, randomPass: string) => {
     try {
         const mailOptions = {
             from: `"${smtp_name}" <${email}>`,

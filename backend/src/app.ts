@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import userRotuer from "./app/module/user/user.route";
+import taskRotuer from "./app/module/task/task.route";
 
 const app: Application = express();
 //cors
@@ -14,5 +15,6 @@ app.get("/api", (req: Request, res: Response) => {
 });
 
 app.use('/user', userRotuer);
+app.use('/tasks', taskRotuer);
 
 export default app;
