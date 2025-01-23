@@ -1,49 +1,87 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Button,
     Input,
     Textarea,
     VStack,
-    HStack,
     Heading,
     Text,
+    HStack,
 } from "@chakra-ui/react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Task } from "@/interface/interFace";
 import { toast } from "react-toastify";
+import axios from 'axios';
+import useGlobalContext from "@/hook/use-context";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
 
 const TaskManagementMain = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [taskName, setTaskName] = useState("");
-    const [taskDescription, setTaskDescription] = useState("");
+    const [taskInfo, setTaskInfo] = useState<Task>({
+        _id: '',
+        name: '',
+        description: '',
+        status: 'Pending',
+    });
+    const { user } = useGlobalContext();
 
-    // Add a new task
-    const handleAddTask = () => {
-        if (!taskName || !taskDescription) {
+    const handleAddTask = async () => {
+        console.log(taskInfo)
+        if (!taskInfo.name || !taskInfo.description) {
             toast.warning("All fields are required");
             return;
         }
-        setTasks((prevTasks) => [
-            ...prevTasks,
-            {
-                id: Date.now().toString(),
-                name: taskName,
-                description: taskDescription,
-                status: "Pending",
-            },
-        ]);
-        setTaskName("");
-        setTaskDescription("");
-        toast.success("Task added successfully");
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}tasks/add`, {
+                taskInfo,
+                user
+            });
+            console.log(response)
+            if (response.status === 200) {
+                setTaskInfo({
+                    ...taskInfo,
+                    name: '',
+                    description: '',
+                    status: 'Pending',
+                });
+                handleGetTasks();
+                toast.success("Task added successfully");
+            }
+        } catch (error) {
+            console.error("Error adding task:", error);
+            toast.error("Failed to add task");
+        }
     };
 
-    const handleDeleteTask = (taskId: string) => {
-        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
-        toast.success("Task deleted successfully");
+    const handleGetTasks = async () => {
+        axios
+            .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}tasks/${user._id}`)
+            .then((res) => {
+                console.log(res);
+                setTasks(res.data.tasks)
+            })
+            .catch((err) => console.log(err))
+    }
+
+    const handleDeleteTask = async (taskId: string) => {
+        await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}tasks/${taskId}`)
+            .then((res) => {
+                console.log(res)
+                setTasks((ele) => ele.filter((task) => task._id !== taskId));
+                toast.success(res.data.message)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     };
+
+
+    useEffect(() => {
+        handleGetTasks();
+    }, []);
 
     const handleDragEnd = (result: any) => {
         if (!result.destination) return;
@@ -59,7 +97,7 @@ const TaskManagementMain = () => {
         tasks
             .filter((task) => task.status === status)
             .map((task, index) => (
-                <Draggable key={task.id} draggableId={task.id} index={index}>
+                <Draggable key={task._id} draggableId={task._id} index={index}>
                     {(provided) => (
                         <Box
                             ref={provided.innerRef}
@@ -86,7 +124,7 @@ const TaskManagementMain = () => {
                             <Button
                                 size="sm"
                                 colorScheme="red"
-                                onClick={() => handleDeleteTask(task.id)}
+                                onClick={() => handleDeleteTask(task._id)}
                             >
                                 Delete
                             </Button>
@@ -96,7 +134,7 @@ const TaskManagementMain = () => {
             ));
 
     return (
-        <VStack gap={8} p={2} align="stretch" bg="gray.50" minH="100vh"maxW={['30vw','50%','60%']} mx={'auto'}>
+        <VStack gap={[2, 4, 8]} p={2} align="stretch" bg="gray.50" minH="100vh" maxW={['90%', '50%', '60%']} mx={'auto'}>
             <Box
                 w="full"
                 maxW="lg"
@@ -112,33 +150,38 @@ const TaskManagementMain = () => {
                 <VStack gap={4}>
                     <Input
                         placeholder="Task Name"
-                        value={taskName}
-                        onChange={(e) => setTaskName(e.target.value)}
+                        value={taskInfo.name}
+                        onChange={(e) => setTaskInfo({ ...taskInfo, 'name': e.target.value })}
                         bg="gray.100"
                         borderColor="teal.500"
-                        border={'1px solid gray'}
+                        border="1px solid gray"
                         px={3}
+                        required
                     />
                     <Textarea
                         placeholder="Task Description"
-                        value={taskDescription}
-                        onChange={(e) => setTaskDescription(e.target.value)}
+                        value={taskInfo.description}
+                        onChange={(e) => setTaskInfo({ ...taskInfo, 'description': e.target.value })}
                         bg="gray.100"
                         borderColor="teal.500"
-                        border={'1px solid gray'}
+                        border="1px solid gray"
                         px={3}
+                        required
                     />
                     <Button
                         bg="teal"
                         w="full"
                         onClick={handleAddTask}
                         size="lg"
-                        color={'white'}
+                        color="white"
                     >
                         Add Task
                     </Button>
                 </VStack>
             </Box>
+
+            {/* <DNDColumn tasks={tasks} setTasks={setTasks} handleDeleteTask={handleDeleteTask} /> */}
+
 
             <DragDropContext onDragEnd={handleDragEnd}>
                 <HStack gap={2} w="full" align="stretch" >

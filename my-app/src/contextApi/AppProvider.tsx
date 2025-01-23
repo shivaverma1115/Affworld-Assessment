@@ -57,7 +57,7 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     } else {
       setLoading(false);
     }
-  }, [token, header, logout]);
+  }, [token]);
 
   function logout() {
     if (typeof window !== "undefined") localStorage.removeItem("userToken");

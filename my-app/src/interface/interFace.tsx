@@ -1,4 +1,5 @@
 export interface IUser {
+    _id: string;
     name: string;
     email: string;
     password: string;
@@ -24,7 +25,7 @@ export interface AppContextType {
 }
 
 export interface Task {
-    id: string;
+    _id: string;
     name: string;
     description: string;
     status: "Pending" | "Completed" | "Done";
