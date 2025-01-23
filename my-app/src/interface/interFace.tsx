@@ -22,3 +22,10 @@ export interface AppContextType {
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+export interface Task {
+    id: string;
+    name: string;
+    description: string;
+    status: "Pending" | "Completed" | "Done";
+};

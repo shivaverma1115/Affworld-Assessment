@@ -5,17 +5,13 @@ import { IUser } from '../../interface/interFace';
 import Link from 'next/link';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { signIn, useSession } from 'next-auth/react';
 import useGlobalContext from '@/hook/use-context';
 import { useRouter } from 'next/navigation';
+import LoginWithGoogle from './LoginWithGoogle';
 
 const LoginMain = () => {
-    const { user,setLoggedIn } = useGlobalContext();
+    const { user, setLoggedIn } = useGlobalContext();
     const [loginInfo, setLoginInfo] = useState<IUser | undefined>();
-    const session = useSession();
-
-    console.log(user)
-    console.log(session)
     const router = useRouter();
     if (user) {
         router.push('/task-management');
@@ -35,7 +31,6 @@ const LoginMain = () => {
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}user/login`, loginInfo)
             .then((res) => {
                 setLoggedIn(true);
-                // console.log(res.data)
                 if (typeof window !== "undefined") localStorage.setItem("userToken", res.data.token)
                 toast.success(res.data.message)
             })
@@ -99,7 +94,7 @@ const LoginMain = () => {
                         </Button>
                     </Stack>
                 </form>
-                <Button onClick={() => signIn("google")} >Sign with Google</Button>
+                <LoginWithGoogle setLoggedIn={setLoggedIn} />
                 <Box mt={4} textAlign="center">
                     <Text>
                         New User?{' '}

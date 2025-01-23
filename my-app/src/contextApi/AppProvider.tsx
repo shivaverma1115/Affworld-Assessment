@@ -3,6 +3,8 @@ import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { AppContextType, IUser } from "@/interface/interFace";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 const AppProvider = ({ children }: { children: React.ReactNode }) => {
@@ -10,6 +12,7 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser>();
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   let token = '';
   if (typeof window !== "undefined") {
@@ -54,13 +57,15 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     } else {
       setLoading(false);
     }
-  }, [token, header]);
+  }, [token, header, logout]);
 
-  const logout = () => {
+  function logout() {
     if (typeof window !== "undefined") localStorage.removeItem("userToken");
     setLoading(false);
     setLoggedIn(false);
     setUser(undefined);
+    signOut()
+    router.replace("/login");
   };
 
   const contextValue: AppContextType = {
