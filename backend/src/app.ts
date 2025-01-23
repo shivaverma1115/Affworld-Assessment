@@ -5,7 +5,7 @@ import taskRotuer from "./app/module/task/task.route";
 
 const app: Application = express();
 //cors
-app.use(cors());
+app.use(cors({origin:'*'}));
 // parse data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

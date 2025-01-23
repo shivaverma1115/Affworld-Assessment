@@ -9,7 +9,7 @@ const user_route_1 = __importDefault(require("./app/module/user/user.route"));
 const task_route_1 = __importDefault(require("./app/module/task/task.route"));
 const app = (0, express_1.default)();
 //cors
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({ origin: '*' }));
 // parse data
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
